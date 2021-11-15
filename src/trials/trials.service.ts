@@ -13,7 +13,7 @@ export class TrialsService {
     private readonly trialsRepository: TrialsRepository,
   ) {}
 
-  async loadData(page: number, perPage: number) {
+  async loadData(page: number, perPage: number): Promise<any> {
     const url = 'https://api.odcloud.kr/api/3074271/v1/uddi:cfc19dda-6f75-4c57-86a8-bb9c8b103887';
 
     const result: AxiosResponse[] = await axios
@@ -42,30 +42,38 @@ export class TrialsService {
 
   @Cron(CronExpression.EVERY_WEEK)
   async update(page = 1, perPage = 10) {
-    let apiData = await this.loadData(page, perPage) as any;
+    let data = await this.loadData(page, perPage) 
 
-    for (let i = 0; i < apiData.data.length; i++) {
-      let apiDatum = apiData.data[i];
-      let trial = await this.trialsRepository.findOne({ id: apiDatum['과제번호'] })
-
-      if (!trial) {
-        await this.trialsRepository.save({
-          id: String(apiDatum['과제번호']),
-          title: String(apiDatum['과제명']),
-          department: String(apiDatum['진료과']),
-          institution: String(apiDatum['연구책임기관']),
-          subjectCount: Number(apiDatum['전체목표연구대상자수']),
-          period: String(apiDatum['연구기간']),
-          researchType: String(apiDatum['연구종류']),
-          stage: String(apiDatum['임상시험단계(연구모형)']),
-          scope: String(apiDatum['연구범위']),
-        });
-      } else {
-        let updatedTrial = this.updatedTrialEntity(apiDatum, trial);
-        return await this.trialsRepository.update(trial.id, updatedTrial);
+    while (page <= data.totalCount) {
+      let apiData = await this.loadData(page, perPage) as any;
+      page = page + perPage;
+      
+      for (let i = 0; i < apiData.data.length; i++) {
+        let apiDatum = apiData.data[i];
+        let trial = await this.trialsRepository.findOne({ id: apiDatum['과제번호'] })
+        console.log('datum', apiDatum)
+        if (!trial) {
+          let newTrial = await this.trialsRepository.create({
+            id: apiDatum['과제번호'],
+            title: apiDatum['과제명'],
+            department: apiDatum['진료과'],
+            institution: apiDatum['연구책임기관'],
+            subjectCount: Number(apiDatum['전체목표연구대상자수']),
+            period: apiDatum['연구기간'],
+            researchType: apiDatum['연구종류'],
+            stage: apiDatum['임상시험단계(연구모형)'],
+            scope: apiDatum['연구범위'],
+          });
+          await this.trialsRepository.save(newTrial);
+        } else {
+          let updatedTrial = this.updatedTrialEntity(apiDatum, trial);
+          return await this.trialsRepository.update(trial.id, updatedTrial);
+        }
+  
       }
 
     }
+    
   }
 
   updatedTrialEntity(apiDatum, dbDatum) {
