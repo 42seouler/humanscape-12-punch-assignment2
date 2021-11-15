@@ -14,12 +14,14 @@ export class TrialsService {
   ) {}
 
   async loadData(page: number, perPage: number): Promise<any> {
+  async loadData(page: number, perPage: number, key: string) {
+    const serviceKey =
+      key || this.configService.get('API_KEY_AUTH') || 'humanscape';
+
     const url = 'https://api.odcloud.kr/api/3074271/v1/uddi:cfc19dda-6f75-4c57-86a8-bb9c8b103887';
 
-    const result: AxiosResponse[] = await axios
-      .get(
-        `${url}?page=${page}&perPage=${perPage}&serviceKey=${this.configService.get('API_KEY_AUTH')}`
-      )
+    const result: AxiosResponse = await axios
+      .get(`${url}?page=${page}&perPage=${perPage}&serviceKey=${serviceKey}`)
       .then((data) => data.data)
       .catch((e) => {
         console.log('error', e.message);
