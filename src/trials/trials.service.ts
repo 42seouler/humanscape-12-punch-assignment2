@@ -13,8 +13,7 @@ export class TrialsService {
     private readonly trialsRepository: TrialsRepository,
   ) {}
 
-  async loadData(page: number, perPage: number): Promise<any> {
-  async loadData(page: number, perPage: number, key: string) {
+  async loadData(page: number, perPage: number, key?: string): Promise<any> {
     const serviceKey =
       key || this.configService.get('API_KEY_AUTH') || 'humanscape';
 
