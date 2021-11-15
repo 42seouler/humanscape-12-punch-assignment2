@@ -10,7 +10,7 @@ import { TrialsModule } from './trials/trials.module';
     TypeOrmModule.forRoot({
       type: 'sqlite',
       database: './humanscape.db',
-      entities: [Trial],
+      entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: true,
     }),
     TrialsModule,
