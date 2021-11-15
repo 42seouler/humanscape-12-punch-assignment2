@@ -1,9 +1,9 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm'
+import { Column, CreateDateColumn, Entity, PrimaryColumn, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
 
 @Entity()
 export class Trial {
 
-    @PrimaryGeneratedColumn()
+    @PrimaryColumn()
     id: string // 과제번호
 
     @Column()
@@ -16,7 +16,7 @@ export class Trial {
     institution: string // 연구책임기관
     
     @Column()
-    subjectCount: string // 전체목표연구대상자수
+    subjectCount: number // 전체목표연구대상자수
     
     @Column()
     period: string // 연구기간
@@ -30,10 +30,9 @@ export class Trial {
     @Column()
     scope: string // 연구범위
     
-    @Column()
+    @CreateDateColumn()
     createdAt: Date
     
-    @Column()
+    @UpdateDateColumn()
     updatedAt: Date
-
 }
