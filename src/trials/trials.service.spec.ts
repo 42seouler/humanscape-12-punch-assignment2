@@ -1,3 +1,4 @@
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import { TrialsService } from './trials.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
