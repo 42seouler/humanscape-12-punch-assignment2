@@ -8,12 +8,16 @@ import { UpdateTrialDto } from './dto/update-trial.dto';
 export class TrialsService {
   constructor(private configService: ConfigService) {}
 
-  async loadData() {
+  async loadData(page: number, perPage: number) {
     const url =
       'https://api.odcloud.kr/api/3074271/v1/uddi:cfc19dda-6f75-4c57-86a8-bb9c8b103887';
 
     const result: AxiosResponse = await axios
-      .get(`${url}?serviceKey=${this.configService.get('API_KEY_AUTH')}`)
+      .get(
+        `${url}?page=${page}&perPage=${perPage}&serviceKey=${this.configService.get(
+          'API_KEY_AUTH',
+        )}`,
+      )
       .then((data) => data.data)
       .catch((e) => {
         console.log(e);
