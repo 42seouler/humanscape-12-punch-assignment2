@@ -3,30 +3,36 @@ import { Column, PrimaryGeneratedColumn } from 'typeorm'
 export class Trial {
 
     @PrimaryGeneratedColumn()
-    "과제번호"
+    id: string // 과제번호
+
+    @Column()
+    title: string // 과제명
     
     @Column()
-    "과제명"
+    department: string // 진료과
     
     @Column()
-    "연구기관"
+    institution: string // 연구책임기관
     
     @Column()
-    "연구범위"
+    subjectCount: string // 전체목표연구대상자수
     
     @Column()
-    "연구종류"
+    period: string // 연구기간
     
     @Column()
-    "연구책임기관"
+    researchType: string // 연구종류
     
     @Column()
-    "임상시험단계(연구모형)"
+    stage: string // 임상시험단계(연구모형)
     
     @Column()
-    "전체목표연구대상자수"
+    scope: string // 연구범위
     
     @Column()
-    "진료과"
+    createdAt: Date
+    
+    @Column()
+    updatedAt: Date
 
 }
