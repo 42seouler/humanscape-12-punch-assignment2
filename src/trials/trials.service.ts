@@ -6,6 +6,7 @@ import { TrialsRepository } from './trials.repository';
 import { Trial } from './entities/trial.entity';
 import PaginationDto from '../pagination/pagination.dto';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Like } from "typeorm";
 
 @Injectable()
 export class TrialsService {
@@ -32,7 +33,7 @@ export class TrialsService {
     return result;
   }
 
-  findAll(paginationDto: PaginationDto) {
+  findUpdateList(paginationDto: PaginationDto) {
     const { offset, skip } = paginationDto;
     const now = new Date();
 
@@ -59,8 +60,26 @@ export class TrialsService {
       .getMany();
   }
 
-  testFind() {
-    return this.trialsRepository.find();
+  async findAll(search: string, paginationDto: PaginationDto): Promise<Trial[]>  {
+    const { offset, skip } = paginationDto;
+    const data = await this.trialsRepository.find({
+      where: [
+          {id: Like(`%${search}%`)},
+          {title: Like(`%${search}%`)},
+          {department: Like(`%${search}%`)},
+          {institution: Like(`%${search}%`)},
+          {subjectCount: Like(`%${search}%`)},
+          {period: Like(`%${search}%`)},
+          {researchType: Like(`%${search}%`)},
+          {stage: Like(`%${search}%`)},
+          {scope: Like(`%${search}%`)},
+          {updatedAt: Like(`%${search}%`)},
+      ],
+      skip: skip*offset,
+      take: skip
+      
+    });
+    return data;
   }
 
   async findOne(id: string): Promise<Trial> {
@@ -76,6 +95,7 @@ export class TrialsService {
   @Cron(CronExpression.EVERY_HOUR)
   async batchTask(page = 1, perPage = 10) {
     const data = await this.loadData(page, perPage);
+    console.log(data);
     let count = Math.ceil(data.totalCount / perPage);
 
     while (count) {
