@@ -18,13 +18,13 @@
 
 ## 😎 Members of 12-Punch
 
-| 이름   | github                                          | 담당 기능 | TIL/회고 |
-| ------ | ----------------------------------------------- | --------- | -------- |
-| 김남형 | [42seouler](https://github.com/)                |           |          |
+| 이름   | github                                          | 담당 기능                | TIL/회고 |
+| ------ | ----------------------------------------------- | ------------------------ | -------- |
+| 김남형 | [42seouler](https://github.com/)                | 업데이트 데이터 조회         |[휴먼스케이프회고](https://velog.io/@42seouler/Assignment-5)|
 | 김서경 | [riley909](https://github.com/riley909)         | 외부 API 호출, Unit Test |          |
-| 김요셉 | [kim-jos](https://github.com/kim-jos)           |임상정보 수집 Batch Task           |          |
-| 정천우 | [codehousepig](https://github.com/codehousepig) |           |          |
-| 최유진 | [n12seconds](https://github.com/n12seconds)     |           |          |
+| 김요셉 | [kim-jos](https://github.com/kim-jos)           | 임상정보 수집 Batch Task |          |
+| 정천우 | [codehousepig](https://github.com/codehousepig) | Unit Test, 배포         | [codehousepig](https://blog.naver.com/codehouse9/222568810485)          |
+| 최유진 | [n12seconds](https://github.com/n12seconds)     |            |          |
 
 </div>
 
@@ -104,31 +104,118 @@
 ## 📌 구현 기능
 
 ### 임상정보 수집하는 Batch Task
+
 Cron을 사용해 매 시간 임상정보를 수집하는 메소드가 실행되도록 설정했습니다.
 메소드 실행방식은 다음과 같습니다:
-1) 해당 사이트의 정보를 HTTP GET를 사용해 수집합니다.
-2) 각 임상정보의 과제번호를 사용해 DB에 저장되어 있는지 확인합니다 (Key 값을 '과제번호'로 설정했습니다).
-3) 과제번호가 DB에 저장되어 있다면 update를 합니다.
-4) 과제번호가 DB에 저장되어 있지 않다면 insert를 합니다.
+
+1. 해당 사이트의 정보를 HTTP GET를 사용해 수집합니다.
+2. 각 임상정보의 과제번호를 사용해 DB에 저장되어 있는지 확인합니다 (Key 값을 '과제번호'로 설정했습니다).
+3. 과제번호가 DB에 저장되어 있다면 update를 합니다.
+4. 과제번호가 DB에 저장되어 있지 않다면 insert를 합니다.
 
 ### Unit Test
+
+##### loadData 메소드
+
+- 외부 API를 호출해서 임상정보 데이터를 가져오는 메소드 입니다.
+- API 호출에 필요한 api key가 있는지를 확인합니다.
+- 유효한 api key를 가지고 있는 경우 호출이 성공하는지 확인합니다.
+- api key가 유효하지 않은 경우 결과가 undefined임을 확인합니다.
+
 ##### Batch Task메소드
+
 - 기능에 대한 설명은 '임상정보 수집하는 Batch Task'에서 확인할 수 있습니다.
 - Batch Task 메소드에서 테스트 할 수 있는 기능은 총 세가지라고 생각했습니다: 1) Cron기능, 2) pagination 기능, 3) update/insert 기능 입니다.
 - 해당 프로젝트에서는 가장 핵심이 되는 update/insert 기능을 테스트를 했습니다. Cron는 Nest에서 제공하는 라이브러리라서 따로 하지 않았습니다.
 - Update/insert 기능을 테스트하기 위해 DB에 데이터가 있을 때와 없을 때의 시나리오를 생각했고 update/insert 메소드가 제대로 실행되는지 확인했습니다.
+
+##### findUpdateList 메소드
+
+- createQueryBuilder를 호출하는지 확인합니다.
+  - 호출이 횟수가 1회인지 확인합니다.
+  - take와 skip 메소드를 호출하는지 확인합니다.
+- 조회한 결과가 유효한지 확인합니다.
+
 <br>
 <br>
 
 ## 📖 API Document
 
-[🔗 Postman Document]()
+[🔗 Swagger ](http://13.125.0.161:3015/api/)
 
 ### API Test 방법
 
-다음 링크로 이동합니다. [postman 링크]()
+#### <span style="color:red">주의사항</span>
+- <span style="color:slateblue">아래의 findUpdateList, findAll은 페이지네이션이 적용되어 있습니다.</span>
+- <span style="color:slateblue">offset(page)를 뜻하고 offset은 인덱스 기준으로 되어 있기 때문에 0부터 시작합니다.</span>
+- <span style="color:slateblue">skip(limit)을 뜻하고 한번에 가져올 요소의 갯수입니다.</span>
 
-- 로그인, 회원가입을 제외한 api 호출시 accessToken이 필요합니다.
+### findUpdateList
+- 조회 기준점은 현재 시간 기준으로 -7일 00:00:00부터 현재 23:59:59.999까지의 기준으로 데이터를 조회하고 페이지네이션 기능이 적용되어 있습니다.
+- 예시 데이터는 아래와 같습니다.
+```
+{
+  "updateElement": 업데이트 된 요소의 수
+  "totalPage": 업데이트 된 총 페이지 수
+  "currentPage": 현재 페이지
+  "data": [
+    {
+      "id": "C130010",
+      "title": "조직구증식증 임상연구 네트워크 구축 및 운영(HLH)",
+      "department": "Pediatrics",
+      "institution": "서울아산병원",
+      "subjectCount": 120,
+      "period": "3년",
+      "researchType": "관찰연구",
+      "stage": "코호트",
+      "scope": "국내다기관",
+      "createdAt": "2021-11-01T12:51:43.000Z",
+      "updatedAt": "2021-11-16T13:00:00.000Z"
+    },
+    ....
+```
+
+### findAll
+- 검색어를 기준으로 모든 컬럼 값을 매칭하여 매칭되는 데이터를 조회하고 페이지네이션 기능이 적용되어 있습니다.
+- 예시 데이터는 아래와 같습니다.
+```
+{
+  "count": 조회된 총 데이터 수,
+  "data": [
+    {
+      "id": "C130011",
+      "title": "대한민국 쇼그렌 증후군 코호트 구축",
+      "department": "Rheumatology",
+      "institution": "가톨릭대 서울성모병원",
+      "subjectCount": 500,
+      "period": "6년",
+      "researchType": "관찰연구",
+      "stage": "코호트",
+      "scope": "국내다기관",
+      "createdAt": "2021-11-16T13:17:46.000Z",
+      "updatedAt": "2021-11-16T14:00:00.000Z"
+    }, ...
+```
+
+### findOne
+- findOne의 키값은 과제번호로 지정하였습니다.
+- 예시 데이터는 아래와 같습니다.
+```
+  {
+      "id": "C130011",
+      "title": "대한민국 쇼그렌 증후군 코호트 구축",
+      "department": "Rheumatology",
+      "institution": "가톨릭대 서울성모병원",
+      "subjectCount": 500,
+      "period": "6년",
+      "researchType": "관찰연구",
+      "stage": "코호트",
+      "scope": "국내다기관",
+      "createdAt": "2021-11-16T13:17:46.000Z",
+      "updatedAt": "2021-11-16T14:00:00.000Z"
+    }, ...
+```
+
 
   <br>
   <br>
@@ -156,7 +243,7 @@ $ npm install
 $ npm start
 ```
 
-<span style="color:red"><b>[수정]</b>4. Unit test 및 End-to-End test를 진행합니다.</span>
+4.유닛 테스트를 확인합니다.
 
 ```
 $ npm test

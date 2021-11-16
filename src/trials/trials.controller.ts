@@ -1,6 +1,6 @@
-import { Controller, Get, Param, Patch, Query } from '@nestjs/common';
+import { Controller, Get, Param, Query } from '@nestjs/common';
 import { TrialsService } from './trials.service';
-import { ApiTags,ApiOperation } from '@nestjs/swagger';
+import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import PaginationDto from '../pagination/pagination.dto';
 
 @ApiTags('trials')
@@ -16,7 +16,10 @@ export class TrialsController {
 
   @ApiOperation({ summary: '수집한 임상정보 전체 리스트 + 검색' })
   @Get()
-  async findAll(@Query('search') search: string, @Query() paginationDto: PaginationDto) {
+  async findAll(
+    @Query('search') search: string,
+    @Query() paginationDto: PaginationDto,
+  ) {
     return this.trialsService.findAll(search, paginationDto);
   }
 
@@ -25,5 +28,4 @@ export class TrialsController {
   findOne(@Param('id') id: string) {
     return this.trialsService.findOne(id);
   }
-  
 }
