@@ -147,7 +147,77 @@ Cron을 사용해 매 시간 임상정보를 수집하는 메소드가 실행되
 
 다음 링크로 이동합니다. [postman 링크]()
 
-- 로그인, 회원가입을 제외한 api 호출시 accessToken이 필요합니다.
+#### <span style="color:red">주의사항</span>
+- <span style="color:slateblue">아래의 findUpdateList, findAll은 페이지네이션이 적용되어 있습니다.</span>
+- <span style="color:slateblue">offset(page)를 뜻하고 offset은 인덱스 기준으로 되어 있기 때문에 0부터 시작합니다.</span>
+- <span style="color:slateblue">skip(limit)을 뜻하고 한번에 가져올 요소의 갯수입니다.</span>
+
+### findUpdateList
+- 조회 기준점은 현재 시간 기준으로 -7일 00:00:00부터 현재 23:59:59.999까지의 기준으로 데이터를 조회하고 페이지네이션 기능이 적용되어 있습니다.
+- 예시 데이터는 아래와 같습니다.
+```
+{
+  "updateElement": 업데이트 된 요소의 수
+  "totalPage": 업데이트 된 총 페이지 수
+  "currentPage": 현재 페이지
+  "data": [
+    {
+      "id": "C130010",
+      "title": "조직구증식증 임상연구 네트워크 구축 및 운영(HLH)",
+      "department": "Pediatrics",
+      "institution": "서울아산병원",
+      "subjectCount": 120,
+      "period": "3년",
+      "researchType": "관찰연구",
+      "stage": "코호트",
+      "scope": "국내다기관",
+      "createdAt": "2021-11-01T12:51:43.000Z",
+      "updatedAt": "2021-11-16T13:00:00.000Z"
+    },
+    ....
+```
+
+### findAll
+- 검색어를 기준으로 모든 컬럼 값을 매칭하여 매칭되는 데이터를 조회하고 페이지네이션 기능이 적용되어 있습니다.
+- 예시 데이터는 아래와 같습니다.
+```
+{
+  "count": 조회된 총 데이터 수,
+  "data": [
+    {
+      "id": "C130011",
+      "title": "대한민국 쇼그렌 증후군 코호트 구축",
+      "department": "Rheumatology",
+      "institution": "가톨릭대 서울성모병원",
+      "subjectCount": 500,
+      "period": "6년",
+      "researchType": "관찰연구",
+      "stage": "코호트",
+      "scope": "국내다기관",
+      "createdAt": "2021-11-16T13:17:46.000Z",
+      "updatedAt": "2021-11-16T14:00:00.000Z"
+    }, ...
+```
+
+### findOne
+- findOne의 키값은 과제번호로 지정하였습니다.
+- 예시 데이터는 아래와 같습니다.
+```
+  {
+      "id": "C130011",
+      "title": "대한민국 쇼그렌 증후군 코호트 구축",
+      "department": "Rheumatology",
+      "institution": "가톨릭대 서울성모병원",
+      "subjectCount": 500,
+      "period": "6년",
+      "researchType": "관찰연구",
+      "stage": "코호트",
+      "scope": "국내다기관",
+      "createdAt": "2021-11-16T13:17:46.000Z",
+      "updatedAt": "2021-11-16T14:00:00.000Z"
+    }, ...
+```
+
 
   <br>
   <br>
