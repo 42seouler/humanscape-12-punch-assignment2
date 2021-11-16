@@ -2,9 +2,6 @@ import { Module } from '@nestjs/common';
 import { ScheduleModule } from '@nestjs/schedule';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { Trial } from './trials/entities/trial.entity';
 import { TrialsModule } from './trials/trials.module';
 
 @Module({
@@ -22,7 +19,5 @@ import { TrialsModule } from './trials/trials.module';
     ScheduleModule.forRoot(),
     TrialsModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
 })
 export class AppModule {}

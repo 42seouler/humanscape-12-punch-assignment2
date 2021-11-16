@@ -6,7 +6,7 @@ import { TrialsRepository } from './trials.repository';
 import { Trial } from './entities/trial.entity';
 import PaginationDto from '../pagination/pagination.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Like } from "typeorm";
+import { Like } from 'typeorm';
 
 @Injectable()
 export class TrialsService {
@@ -75,26 +75,25 @@ export class TrialsService {
     };
   }
 
-  async findAll(search: string, paginationDto: PaginationDto)  {
+  async findAll(search: string, paginationDto: PaginationDto) {
     const { offset, skip } = paginationDto;
     const [data, count] = await this.trialsRepository.findAndCount({
       where: [
-          {id: Like(`%${search}%`)},
-          {title: Like(`%${search}%`)},
-          {department: Like(`%${search}%`)},
-          {institution: Like(`%${search}%`)},
-          {subjectCount: Like(`%${search}%`)},
-          {period: Like(`%${search}%`)},
-          {researchType: Like(`%${search}%`)},
-          {stage: Like(`%${search}%`)},
-          {scope: Like(`%${search}%`)},
-          {updatedAt: Like(`%${search}%`)},
+        { id: Like(`%${search}%`) },
+        { title: Like(`%${search}%`) },
+        { department: Like(`%${search}%`) },
+        { institution: Like(`%${search}%`) },
+        { subjectCount: Like(`%${search}%`) },
+        { period: Like(`%${search}%`) },
+        { researchType: Like(`%${search}%`) },
+        { stage: Like(`%${search}%`) },
+        { scope: Like(`%${search}%`) },
+        { updatedAt: Like(`%${search}%`) },
       ],
       skip: offset * skip,
-      take: skip
-      
+      take: skip,
     });
-    return {count, data};
+    return { count, data };
   }
 
   async findOne(id: string): Promise<Trial> {
