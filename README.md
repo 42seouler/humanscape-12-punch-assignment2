@@ -112,11 +112,11 @@ Cron을 사용해 매 시간 임상정보를 수집하는 메소드가 실행되
 4) 과제번호가 DB에 저장되어 있지 않다면 insert를 합니다.
 
 ### Unit Test
-##### Batch Task를 실행하는 메소드에 대한 unit test를 작성했습니다.
-- 기능에 대한 설명은 '잆상정보 수집하는 Batch Task'에서 확인할 수 있습니다.
+##### Batch Task메소드
+- 기능에 대한 설명은 '임상정보 수집하는 Batch Task'에서 확인할 수 있습니다.
 - Batch Task 메소드에서 테스트 할 수 있는 기능은 총 세가지라고 생각했습니다: 1) Cron기능, 2) pagination 기능, 3) update/insert 기능 입니다.
 - 해당 프로젝트에서는 가장 핵심이 되는 update/insert 기능을 테스트를 했습니다. Cron는 Nest에서 제공하는 라이브러리라서 따로 하지 않았습니다.
-- Update/insert 기능을 테스트하기 위해 DB에 데이터가 있을 때와 없을 때의 시나리오를 생각했습니다. 그리고 update/insert 메소드가 실행되었는지 확인했습니다.
+- Update/insert 기능을 테스트하기 위해 DB에 데이터가 있을 때와 없을 때의 시나리오를 생각했고 update/insert 메소드가 제대로 실행되는지 확인했습니다.
 <br>
 <br>
 
