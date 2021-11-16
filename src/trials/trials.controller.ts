@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { TrialsService } from './trials.service';
 import { CreateTrialDto } from './dto/create-trial.dto';
@@ -21,13 +22,13 @@ export class TrialsController {
   }
 
   @Get()
-  findAll() {
-    return this.trialsService.findAll();
+  findAll(@Query('search') search: string) {
+    return this.trialsService.findAll(search);
   }
-
+  
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.trialsService.findOne(+id);
+    return this.trialsService.findOne(id);
   }
 
   @Patch(':id')
