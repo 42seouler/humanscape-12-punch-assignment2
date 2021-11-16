@@ -56,7 +56,7 @@ export class TrialsService {
       .setParameters(filters)
       .orderBy('trial.updatedAt', 'DESC')
       .take(skip)
-      .skip((offset - 1) * skip)
+      .skip(offset * skip)
       .getMany();
 
     const updateElement = await this.trialsRepository
@@ -90,7 +90,7 @@ export class TrialsService {
           {scope: Like(`%${search}%`)},
           {updatedAt: Like(`%${search}%`)},
       ],
-      skip: skip*offset,
+      skip: offset * skip,
       take: skip
       
     });
