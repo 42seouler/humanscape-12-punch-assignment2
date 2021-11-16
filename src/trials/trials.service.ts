@@ -77,7 +77,7 @@ export class TrialsService {
 
   async findAll(search: string, paginationDto: PaginationDto) {
     const { offset, skip } = paginationDto;
-    const [ data, count ] = await this.trialsRepository.findAndCount({
+    const [data, count] = await this.trialsRepository.findAndCount({
       where: [
         { id: Like(`%${search}%`) },
         { title: Like(`%${search}%`) },

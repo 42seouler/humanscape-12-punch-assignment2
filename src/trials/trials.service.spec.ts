@@ -23,7 +23,7 @@ const mockRepository = () => ({
   }),
   find: jest.fn(),
   findOne: jest.fn(),
-  findAndCount: jest.fn(),  
+  findAndCount: jest.fn(),
   create: jest.fn(),
   update: jest.fn(),
   save: jest.fn(),
@@ -113,7 +113,6 @@ describe('TrialsService', () => {
     });
 
     it('결과로 배열을 리턴해야 합니다.', async () => {
-     
       const trial = {
         id: faker.datatype.number(),
         title: faker.lorem.word(),
@@ -132,70 +131,67 @@ describe('TrialsService', () => {
         updateElement: 70,
         totalPage: 7,
         currentPage: 1,
-        data: [trial]
+        data: [trial],
       };
-      
+
       jest
         .spyOn(trialsRepository.createQueryBuilder(), 'getMany')
         .mockResolvedValueOnce([trial]);
       jest
-      .spyOn(trialsRepository.createQueryBuilder(), 'getCount')
-      .mockResolvedValueOnce(70);
+        .spyOn(trialsRepository.createQueryBuilder(), 'getCount')
+        .mockResolvedValueOnce(70);
       const result = await service.findUpdateList(mockPaginationDto);
       expect(trialsRepository.createQueryBuilder().getMany).toHaveBeenCalled();
       expect(result).toEqual(trialList);
     });
 
-      describe('findOne 의', () => {
-        it('Status: 200, 성공적으로 수행 됨', async () => {
-          const id = 'C130010';
-          const temp = {
-            id: id,
-            title: '조직구증식증 임상연구 네트워크 구축 및 운영(HLH)',
-            department: 'Pediatrics',
-            institution: '서울아산병원',
-            subjectCount: 120,
-            period: '3년',
-            researchType: '관찰연구',
-            stage: '코호트',
-            scope: '국내다기관',
-          };
-          trialsRepository.findOne.mockResolvedValue(temp);
-          const result = await service.findOne(id);
-          expect(result.id).toEqual(temp.id);
-        }); // end status 200
-        it('Status: 404 Not Found, 요청 리소스를 찾을 수 없음', async () => {
-          const id = 'temp';
-          try {
-            await service.findOne(id);
-          } catch (e) {
-            expect(e).toBeInstanceOf(NotFoundException);
-          }
-        }); // end status 404
-      }); // end findOne()
+    describe('findOne 의', () => {
+      it('Status: 200, 성공적으로 수행 됨', async () => {
+        const id = 'C130010';
+        const temp = {
+          id: id,
+          title: '조직구증식증 임상연구 네트워크 구축 및 운영(HLH)',
+          department: 'Pediatrics',
+          institution: '서울아산병원',
+          subjectCount: 120,
+          period: '3년',
+          researchType: '관찰연구',
+          stage: '코호트',
+          scope: '국내다기관',
+        };
+        trialsRepository.findOne.mockResolvedValue(temp);
+        const result = await service.findOne(id);
+        expect(result.id).toEqual(temp.id);
+      }); // end status 200
+      it('Status: 404 Not Found, 요청 리소스를 찾을 수 없음', async () => {
+        const id = 'temp';
+        try {
+          await service.findOne(id);
+        } catch (e) {
+          expect(e).toBeInstanceOf(NotFoundException);
+        }
+      }); // end status 404
+    }); // end findOne()
 
-      describe('update 메소드', () => {
-        it('should insert', async () => {
-          jest.spyOn(trialsRepository, 'findOne').mockResolvedValue(null);
-          const insertFunction = jest.spyOn(service, 'insertTrialEntity');
+    describe('update 메소드', () => {
+      it('should insert', async () => {
+        jest.spyOn(trialsRepository, 'findOne').mockResolvedValue(null);
+        const insertFunction = jest.spyOn(service, 'insertTrialEntity');
 
-          await service.batchTask();
-          expect(insertFunction).toHaveBeenCalled();
-        });
-
-        it('should update', async () => {
-          jest
-            .spyOn(trialsRepository, 'findOne')
-            .mockResolvedValue({} as Trial);
-          const updateFunction = jest.spyOn(service, 'updateTrialEntity');
-
-          await service.batchTask();
-          expect(updateFunction).toHaveBeenCalled();
-        });
+        await service.batchTask();
+        expect(insertFunction).toHaveBeenCalled();
       });
-    }); // end TrialsService
 
-    
+      it('should update', async () => {
+        jest.spyOn(trialsRepository, 'findOne').mockResolvedValue({} as Trial);
+        const updateFunction = jest.spyOn(service, 'updateTrialEntity');
+
+        await service.batchTask();
+        expect(updateFunction).toHaveBeenCalled();
+      });
+    });
+  }); // end TrialsService
+
   describe('findAll 호출되면', () => {
     it('findAll validation test', async () => {
       const search = faker.datatype.string(5);
@@ -204,15 +200,10 @@ describe('TrialsService', () => {
         skip: 10,
       };
 
-      jest
-      .spyOn(trialsRepository, 'findAndCount')
-      .mockResolvedValue({});
-      
+      jest.spyOn(trialsRepository, 'findAndCount').mockResolvedValue({});
+
       await service.findAll(search, mockPaginationDto);
-      // then
       expect(trialsRepository.findAndCount).toHaveBeenCalled();
     });
   });
 });
-
-
