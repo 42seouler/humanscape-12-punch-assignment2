@@ -1,9 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 class PaginationDto {
-  @ApiProperty()
+  @ApiProperty({description: '페이지 번호'})
   offset: number;
-  @ApiProperty()
+  @ApiProperty({description: '한 번에 가져올 데이터 갯수'})
   skip: number;
 }
 
