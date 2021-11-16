@@ -5,9 +5,20 @@ import { Trial } from './entities/trial.entity';
 import { Repository } from 'typeorm';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { TrialsRepository } from './trials.repository';
+import * as faker from 'faker';
 
 type MockRepository<T = any> = Partial<Record<keyof Repository<T>, jest.Mock>>;
+
 const mockRepository = () => ({
+  createQueryBuilder: jest.fn().mockReturnValue({
+    where: jest.fn().mockReturnThis(),
+    andWhere: jest.fn().mockReturnThis(),
+    setParameters: jest.fn().mockReturnThis(),
+    orderBy: jest.fn().mockReturnThis(),
+    take: jest.fn().mockReturnThis(),
+    skip: jest.fn().mockReturnThis(),
+    getMany: jest.fn().mockResolvedValue([]),
+  }),
   find: jest.fn(),
   findOne: jest.fn(),
   create: jest.fn(),
@@ -31,7 +42,10 @@ describe('TrialsService', () => {
         TrialsService,
         ConfigService,
         TrialsRepository,
-        { provide: getRepositoryToken(Trial), useValue: mockRepository() },
+        {
+          provide: getRepositoryToken(Trial),
+          useValue: mockRepository(),
+        },
       ],
     }).compile();
 
@@ -55,6 +69,7 @@ describe('TrialsService', () => {
       const apiKey = configService.get('API_KEY_AUTH');
       expect(apiKey).not.toBeUndefined();
     }); // serviceKey get
+
     it('Status: 200, 성공적으로 수행 됨', async () => {
       const page = 1;
       const perPage = 5;
@@ -62,6 +77,7 @@ describe('TrialsService', () => {
       const result = await service.loadData(page, perPage, key);
       expect(result).toBeInstanceOf(Object);
     }); // page, perPage, serviceKey OK
+
     it('Status: 401, 인증 정보가 정확 하지 않음', async () => {
       const page = 1;
       const perPage = 5;
@@ -70,4 +86,50 @@ describe('TrialsService', () => {
       expect(result).toBeUndefined(); // undefined
     }); // page, perPage OK, serviceKey blank
   }); // end loadDate()
+
+  describe('findAll이 호출되면', () => {
+    const mockPaginationDto = {
+      offset: 1,
+      skip: 10,
+    };
+
+    beforeEach(async () => {
+      trialsRepository.find.mockResolvedValueOnce([]);
+      await service.findAll(mockPaginationDto);
+    });
+
+    it('createQueryBuilder를 호출해야 합니다.', async () => {
+      expect(trialsRepository.createQueryBuilder).toHaveBeenCalledTimes(1);
+      expect(trialsRepository.createQueryBuilder().take).toHaveBeenCalledTimes(
+        1,
+      );
+      expect(trialsRepository.createQueryBuilder().skip).toHaveBeenCalledTimes(
+        1,
+      );
+    });
+
+    it('결과로 배열을 리턴해야 합니다.', async () => {
+      const trial = {
+        id: faker.datatype.number(),
+        title: faker.lorem.word(),
+        department: faker.lorem.word(),
+        institution: faker.lorem.word(),
+        subjectCount: faker.lorem.word(),
+        period: faker.lorem.word(),
+        researchType: faker.lorem.word(),
+        stage: faker.lorem.word(),
+        scope: faker.lorem.word(),
+        createdAt: faker.datatype.datetime(),
+        updatedAt: faker.datatype.datetime(),
+      };
+
+      jest
+        .spyOn(trialsRepository.createQueryBuilder(), 'getMany')
+        .mockResolvedValueOnce([trial]);
+      const result = await service.findAll(mockPaginationDto);
+
+      expect(trialsRepository.createQueryBuilder().getMany).toHaveBeenCalled();
+      expect(result).toEqual([trial]);
+    });
+  });
 }); // end TrialsService
