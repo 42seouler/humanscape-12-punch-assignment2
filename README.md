@@ -23,7 +23,7 @@
 | 김남형 | [42seouler](https://github.com/)                | 업데이트 데이터 조회         |[휴먼스케이프회고](https://velog.io/@42seouler/Assignment-5)|
 | 김서경 | [riley909](https://github.com/riley909)         | 외부 API 호출, Unit Test |          |
 | 김요셉 | [kim-jos](https://github.com/kim-jos)           | 임상정보 수집 Batch Task |          |
-| 정천우 | [codehousepig](https://github.com/codehousepig) |                          |          |
+| 정천우 | [codehousepig](https://github.com/codehousepig) | Unit Test, 배포         | [codehousepig](https://blog.naver.com/codehouse9/222568810485)          |
 | 최유진 | [n12seconds](https://github.com/n12seconds)     |            |          |
 
 </div>
