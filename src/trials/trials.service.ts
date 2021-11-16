@@ -5,7 +5,7 @@ import { Cron, CronExpression } from '@nestjs/schedule';
 import { CreateTrialDto } from './dto/create-trial.dto';
 import { TrialsRepository } from './trials.repository';
 import { Trial } from './entities/trial.entity';
-import { Like } from "typeorm";
+import PaginationDto from '../pagination/pagination.dto';
 
 @Injectable()
 export class TrialsService {
@@ -34,22 +34,32 @@ export class TrialsService {
     return `This action adds a new trial `;
   }
 
-  async findAll(search: string): Promise<Trial[]>  {
-    const data = await this.trialsRepository.find({
-      where: [
-          { id: Like(`%${search}%`)},
-          { title: Like(`%${search}%`)},
-          { department: Like(`%${search}%`)},
-          { institution: Like(`%${search}%`)},
-          { subjectCount: Like(`%${search}%`)},
-          { period: Like(`%${search}%`)},
-          { researchType: Like(`%${search}%`)},
-          { stage: Like(`%${search}%`)},
-          { scope: Like(`%${search}%`)},
-          { updatedAt: Like(`%${search}%`)},
-      ],
-    });
-    return data;
+  findAll(paginationDto: PaginationDto) {
+    const { offset, skip } = paginationDto;
+    //현재시간
+    const now = new Date();
+    // 현재 기준으로 7일 전 00시00분00초
+    const start = new Date(
+      now.setUTCHours(0, 0, 0, 0) - 7 * 24 * 60 * 60 * 1000,
+    );
+    // 현재 기준으로 23:59분999초
+    const end = new Date(now.setUTCHours(23, 59, 59, 999));
+
+    // query 필터
+    const filters = {
+      start: start.toISOString(),
+      end: end.toISOString(),
+    };
+
+    return this.trialsRepository
+      .createQueryBuilder('trial')
+      .where('updatedAt >= :start')
+      .andWhere('updatedAt <= :end')
+      .setParameters(filters)
+      .orderBy('trial.updatedAt', 'DESC')
+      .take(skip)
+      .skip(offset * skip)
+      .getMany();
   }
 
   async findOne(id: string): Promise<Trial> {
@@ -65,7 +75,6 @@ export class TrialsService {
   @Cron(CronExpression.EVERY_WEEK)
   async update(page = 1, perPage = 10) {
     let data = await this.loadData(page, perPage) 
-    
     while (page <= data.totalCount) {
       let apiData = await this.loadData(page, perPage) as any;
       page = page + perPage;
