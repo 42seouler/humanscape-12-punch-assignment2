@@ -1,11 +1,23 @@
-import { ConfigModule, ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import { TrialsService } from './trials.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { Trial } from './entities/trial.entity';
+import { Repository } from 'typeorm';
+import { getRepositoryToken } from '@nestjs/typeorm';
+import { TrialsRepository } from './trials.repository';
+
+type MockRepository<T = any> = Partial<Record<keyof Repository<T>, jest.Mock>>;
+const mockRepository = () => ({
+  find: jest.fn(),
+  findOne: jest.fn(),
+  create: jest.fn(),
+  update: jest.fn(),
+});
 
 describe('TrialsService', () => {
   let service: TrialsService;
   let configService: ConfigService;
+  let trialsRepository: MockRepository<Trial>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -15,11 +27,17 @@ describe('TrialsService', () => {
           isGlobal: true,
         }),
       ],
-      providers: [TrialsService, ConfigService],
+      providers: [
+        TrialsService,
+        ConfigService,
+        TrialsRepository,
+        { provide: getRepositoryToken(Trial), useValue: mockRepository() },
+      ],
     }).compile();
 
     service = module.get<TrialsService>(TrialsService);
     configService = module.get<ConfigService>(ConfigService);
+    trialsRepository = module.get<MockRepository>(getRepositoryToken(Trial));
   });
 
   it('TrialService should be defined', () => {
@@ -27,6 +45,9 @@ describe('TrialsService', () => {
   });
   it('ConfigService should be defined', () => {
     expect(configService).toBeDefined();
+  });
+  it('trialsRepository should be defined', () => {
+    expect(trialsRepository).toBeDefined();
   });
 
   describe('loadDate 의', () => {
