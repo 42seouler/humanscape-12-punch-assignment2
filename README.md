@@ -22,7 +22,7 @@
 | ------ | ----------------------------------------------- | --------- | -------- |
 | 김남형 | [42seouler](https://github.com/)                |           |          |
 | 김서경 | [riley909](https://github.com/riley909)         |           |          |
-| 김요셉 | [kim-jos](https://github.com/kim-jos)           |           |          |
+| 김요셉 | [kim-jos](https://github.com/kim-jos)           |임상정보 수집 Batch Task           |          |
 | 정천우 | [codehousepig](https://github.com/codehousepig) |           |          |
 | 최유진 | [n12seconds](https://github.com/n12seconds)     |           |          |
 
@@ -103,6 +103,20 @@
 
 ## 📌 구현 기능
 
+### 임상정보 수집하는 Batch Task
+Cron을 사용해 매 시간 임상정보를 수집하는 메소드가 실행되도록 설정했습니다.
+메소드 실행방식은 다음과 같습니다:
+1) 해당 사이트의 정보를 HTTP GET를 사용해 수집합니다.
+2) 각 임상정보의 과제번호를 사용해 DB에 저장되어 있는지 확인합니다 (Key 값을 '과제번호'로 설정했습니다).
+3) 과제번호가 DB에 저장되어 있다면 update를 합니다.
+4) 과제번호가 DB에 저장되어 있지 않다면 insert를 합니다.
+
+### Unit Test
+##### Batch Task를 실행하는 메소드에 대한 unit test를 작성했습니다.
+- 기능에 대한 설명은 '잆상정보 수집하는 Batch Task'에서 확인할 수 있습니다.
+- Batch Task 메소드에서 테스트 할 수 있는 기능은 총 세가지라고 생각했습니다: 1) Cron기능, 2) pagination 기능, 3) update/insert 기능 입니다.
+- 해당 프로젝트에서는 가장 핵심이 되는 update/insert 기능을 테스트를 했습니다. Cron는 Nest에서 제공하는 라이브러리라서 따로 하지 않았습니다.
+- Update/insert 기능을 테스트하기 위해 DB에 데이터가 있을 때와 없을 때의 시나리오를 생각했습니다. 그리고 update/insert 메소드가 실행되었는지 확인했습니다.
 <br>
 <br>
 

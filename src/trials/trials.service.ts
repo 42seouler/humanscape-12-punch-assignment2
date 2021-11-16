@@ -33,7 +33,7 @@ export class TrialsService {
     return result;
   }
 
-  findUpdateList(paginationDto: PaginationDto) {
+  async findUpdateList(paginationDto: PaginationDto) {
     const { offset, skip } = paginationDto;
     const now = new Date();
 
@@ -49,15 +49,30 @@ export class TrialsService {
       end: end.toISOString(),
     };
 
-    return this.trialsRepository
+    const data = await this.trialsRepository
       .createQueryBuilder('trial')
       .where('updatedAt >= :start')
       .andWhere('updatedAt <= :end')
       .setParameters(filters)
       .orderBy('trial.updatedAt', 'DESC')
       .take(skip)
-      .skip(offset * skip)
+      .skip((offset - 1) * skip)
       .getMany();
+
+    const updateElement = await this.trialsRepository
+      .createQueryBuilder('trial')
+      .where('updatedAt >= :start')
+      .andWhere('updatedAt <= :end')
+      .setParameters(filters)
+      .getCount();
+
+    const totalPage = Math.round(updateElement / skip);
+    return {
+      updateElement: updateElement,
+      totalPage: totalPage,
+      currentPage: offset,
+      data: data,
+    };
   }
 
   async findAll(search: string, paginationDto: PaginationDto)  {
