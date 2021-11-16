@@ -110,16 +110,14 @@ export class TrialsService {
   @Cron(CronExpression.EVERY_HOUR)
   async batchTask(page = 1, perPage = 10) {
     const data = await this.loadData(page, perPage);
-    console.log(data);
     let count = Math.ceil(data.totalCount / perPage);
 
     while (count) {
       const apiData = await this.loadData(page, perPage);
-      page = ++page;
+      page++;
 
       for (let i = 0; i < apiData.data.length; i++) {
         const apiDatum = apiData.data[i];
-        console.log(`api: ${JSON.stringify(apiDatum)}`);
         const trial = await this.trialsRepository.findOne({
           id: apiDatum['과제번호'],
         });
