@@ -34,11 +34,10 @@ export class TrialsService {
 
   findAll(paginationDto: PaginationDto) {
     const { offset, skip } = paginationDto;
-    //현재시간
     const now = new Date();
-    // 현재 기준으로 7일 전 00시00분00초
+
     const start = new Date(
-      now.setUTCHours(0, 0, 0, 0) - 7 * 24 * 60 * 60 * 1000,
+      now.setUTCHours(0, 0, 0, 0) - 7 * 24 * 60 * 60 * 1000, // 현재 기준으로 7일 전 00시00분00초
     );
     // 현재 기준으로 23:59분999초
     const end = new Date(now.setUTCHours(23, 59, 59, 999));
@@ -60,6 +59,10 @@ export class TrialsService {
       .getMany();
   }
 
+  testFind() {
+    return this.trialsRepository.find();
+  }
+
   async findOne(id: string): Promise<Trial> {
     const data = await this.trialsRepository.findOne({
       id: id,
@@ -70,17 +73,18 @@ export class TrialsService {
     return data;
   }
 
-  @Cron(CronExpression.EVERY_WEEK)
+  @Cron(CronExpression.EVERY_HOUR)
   async batchTask(page = 1, perPage = 10) {
     const data = await this.loadData(page, perPage);
+    let count = Math.ceil(data.totalCount / perPage);
 
-    while (page <= data.totalCount) {
+    while (count) {
       const apiData = await this.loadData(page, perPage);
-
-      page = page + perPage;
+      page = ++page;
 
       for (let i = 0; i < apiData.data.length; i++) {
         const apiDatum = apiData.data[i];
+        console.log(`api: ${JSON.stringify(apiDatum)}`);
         const trial = await this.trialsRepository.findOne({
           id: apiDatum['과제번호'],
         });
@@ -91,10 +95,11 @@ export class TrialsService {
           await this.updateTrialEntity(apiDatum, trial);
         }
       }
+      count--;
     }
   }
 
-  async insertTrialEntity(apiDatum) {
+  private async insertTrialEntity(apiDatum) {
     const newTrial = await this.trialsRepository.create({
       id: apiDatum['과제번호'],
       title: apiDatum['과제명'],
@@ -109,7 +114,7 @@ export class TrialsService {
     return await this.trialsRepository.save(newTrial);
   }
 
-  async updateTrialEntity(apiDatum, dbDatum) {
+  private async updateTrialEntity(apiDatum, dbDatum) {
     const update: Partial<Trial> = {};
 
     if (apiDatum['과제명'] !== dbDatum.title)
