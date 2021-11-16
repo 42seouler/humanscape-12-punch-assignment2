@@ -65,7 +65,7 @@ export class TrialsService {
   @Cron(CronExpression.EVERY_WEEK)
   async update(page = 1, perPage = 10) {
     let data = await this.loadData(page, perPage) 
-
+    
     while (page <= data.totalCount) {
       let apiData = await this.loadData(page, perPage) as any;
       page = page + perPage;
@@ -73,7 +73,7 @@ export class TrialsService {
       for (let i = 0; i < apiData.data.length; i++) {
         let apiDatum = apiData.data[i];
         let trial = await this.trialsRepository.findOne({ id: apiDatum['과제번호'] })
-        console.log('datum', apiDatum)
+        
         if (!trial) {
           let newTrial = await this.trialsRepository.create({
             id: apiDatum['과제번호'],
@@ -86,44 +86,44 @@ export class TrialsService {
             stage: apiDatum['임상시험단계(연구모형)'],
             scope: apiDatum['연구범위'],
           });
-          await this.trialsRepository.save(newTrial);
-        } else {
-          let updatedTrial = this.updatedTrialEntity(apiDatum, trial);
-          return await this.trialsRepository.update(trial.id, updatedTrial);
-        }
-  
-      }
 
+          await this.trialsRepository.save(newTrial);
+        } 
+        
+        else {
+          let updatedTrial = this.updatedTrialEntity(apiDatum, trial);
+          return await this.trialsRepository.update({ id: trial.id }, updatedTrial);
+        }
+      }
     }
-    
   }
 
   updatedTrialEntity(apiDatum, dbDatum) {
     let update: Partial<Trial> = {};
 
     if (apiDatum['과제명'] !== dbDatum.title) 
-      update[dbDatum.title] = apiDatum['과제명']
+      update['title'] = apiDatum['과제명']
       
     if (apiDatum['진료과'] !== dbDatum.department) 
-      update[dbDatum.department] = apiDatum['진료과']
+      update['department'] = apiDatum['진료과']
 
     if (apiDatum['연구책임기관'] !== dbDatum.institution) 
-      update[dbDatum.institution] = apiDatum['연구책임기관']
+      update['institution'] = apiDatum['연구책임기관']
 
     if (apiDatum['전체목표연구대상자수'] !== dbDatum.subjectCount) 
-      update[dbDatum.subjectCount] = apiDatum['전체목표연구대상자수']
+      update['subjectCount'] = apiDatum['전체목표연구대상자수']
 
     if (apiDatum['연구기간'] !== dbDatum.period) 
-      update[dbDatum.period] = apiDatum['연구기간']
+      update['period'] = apiDatum['연구기간']
 
     if (apiDatum['연구종류'] !== dbDatum.researchType) 
-      update[dbDatum.researchType] = apiDatum['연구종류']
+      update['researchType'] = apiDatum['연구종류']
 
-    if (apiDatum['임상시험단계'] !== dbDatum.stage) 
-      update[dbDatum.stage] = apiDatum['임상시험단계']
+    if (apiDatum['임상시험단계(연구모형)'] !== dbDatum.stage) 
+      update['stage'] = apiDatum['임상시험단계(연구모형)']
 
     if (apiDatum['연구범위'] !== dbDatum.scope) 
-      update[dbDatum.scope] = apiDatum['연구범위']
+      update['scope'] = apiDatum['연구범위']
 
     return update;
   }
