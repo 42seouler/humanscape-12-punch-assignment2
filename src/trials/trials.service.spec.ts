@@ -14,6 +14,7 @@ const mockRepository = () => ({
   createQueryBuilder: jest.fn().mockReturnValue({
     where: jest.fn().mockReturnThis(),
     andWhere: jest.fn().mockReturnThis(),
+    getCount: jest.fn().mockReturnThis(),
     setParameters: jest.fn().mockReturnThis(),
     orderBy: jest.fn().mockReturnThis(),
     take: jest.fn().mockReturnThis(),
@@ -22,6 +23,7 @@ const mockRepository = () => ({
   }),
   find: jest.fn(),
   findOne: jest.fn(),
+  findAndCount: jest.fn(),  
   create: jest.fn(),
   update: jest.fn(),
   save: jest.fn(),
@@ -101,7 +103,7 @@ describe('TrialsService', () => {
     });
 
     it('createQueryBuilder를 호출해야 합니다.', async () => {
-      expect(trialsRepository.createQueryBuilder).toHaveBeenCalledTimes(1);
+      expect(trialsRepository.createQueryBuilder).toHaveBeenCalledTimes(2);
       expect(trialsRepository.createQueryBuilder().take).toHaveBeenCalledTimes(
         1,
       );
@@ -111,6 +113,7 @@ describe('TrialsService', () => {
     });
 
     it('결과로 배열을 리턴해야 합니다.', async () => {
+     
       const trial = {
         id: faker.datatype.number(),
         title: faker.lorem.word(),
@@ -125,13 +128,23 @@ describe('TrialsService', () => {
         updatedAt: faker.datatype.datetime(),
       };
 
+      const trialList = {
+        updateElement: 70,
+        totalPage: 7,
+        currentPage: 1,
+        data: [trial]
+      };
+      
       jest
         .spyOn(trialsRepository.createQueryBuilder(), 'getMany')
         .mockResolvedValueOnce([trial]);
+      jest
+      .spyOn(trialsRepository.createQueryBuilder(), 'getCount')
+      .mockResolvedValueOnce(70);
       const result = await service.findUpdateList(mockPaginationDto);
-
       expect(trialsRepository.createQueryBuilder().getMany).toHaveBeenCalled();
-      expect(result).toEqual([trial]);
+      expect(result).toEqual(trialList);
+    });
 
       describe('findOne 의', () => {
         it('Status: 200, 성공적으로 수행 됨', async () => {
@@ -181,5 +194,25 @@ describe('TrialsService', () => {
         });
       });
     }); // end TrialsService
+
+    
+  describe('findAll 호출되면', () => {
+    it('findAll validation test', async () => {
+      const search = faker.datatype.string(5);
+      const mockPaginationDto = {
+        offset: 1,
+        skip: 10,
+      };
+
+      jest
+      .spyOn(trialsRepository, 'findAndCount')
+      .mockResolvedValue({});
+      
+      await service.findAll(search, mockPaginationDto);
+      // then
+      expect(trialsRepository.findAndCount).toHaveBeenCalled();
+    });
   });
 });
+
+
