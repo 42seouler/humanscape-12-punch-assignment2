@@ -2,7 +2,6 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import axios, { AxiosResponse } from 'axios';
 import { Cron, CronExpression } from '@nestjs/schedule';
-import { CreateTrialDto } from './dto/create-trial.dto';
 import { TrialsRepository } from './trials.repository';
 import { Trial } from './entities/trial.entity';
 import PaginationDto from '../pagination/pagination.dto';
@@ -31,10 +30,6 @@ export class TrialsService {
       });
 
     return result;
-  }
-
-  async create(createTrialDto: CreateTrialDto) {
-    return `This action adds a new trial `;
   }
 
   findAll(paginationDto: PaginationDto) {
@@ -76,10 +71,12 @@ export class TrialsService {
   }
 
   @Cron(CronExpression.EVERY_WEEK)
-  async update(page = 1, perPage = 10) {
+  async batchTask(page = 1, perPage = 10) {
     const data = await this.loadData(page, perPage);
+
     while (page <= data.totalCount) {
-      const apiData = (await this.loadData(page, perPage)) as any;
+      const apiData = await this.loadData(page, perPage);
+
       page = page + perPage;
 
       for (let i = 0; i < apiData.data.length; i++) {
@@ -89,31 +86,30 @@ export class TrialsService {
         });
 
         if (!trial) {
-          const newTrial = await this.trialsRepository.create({
-            id: apiDatum['과제번호'],
-            title: apiDatum['과제명'],
-            department: apiDatum['진료과'],
-            institution: apiDatum['연구책임기관'],
-            subjectCount: Number(apiDatum['전체목표연구대상자수']),
-            period: apiDatum['연구기간'],
-            researchType: apiDatum['연구종류'],
-            stage: apiDatum['임상시험단계(연구모형)'],
-            scope: apiDatum['연구범위'],
-          });
-
-          await this.trialsRepository.save(newTrial);
+          await this.insertTrialEntity(apiDatum);
         } else {
-          const updatedTrial = this.updatedTrialEntity(apiDatum, trial);
-          return await this.trialsRepository.update(
-            { id: trial.id },
-            updatedTrial,
-          );
+          await this.updateTrialEntity(apiDatum, trial);
         }
       }
     }
   }
 
-  updatedTrialEntity(apiDatum, dbDatum) {
+  async insertTrialEntity(apiDatum) {
+    const newTrial = await this.trialsRepository.create({
+      id: apiDatum['과제번호'],
+      title: apiDatum['과제명'],
+      department: apiDatum['진료과'],
+      institution: apiDatum['연구책임기관'],
+      subjectCount: Number(apiDatum['전체목표연구대상자수']),
+      period: apiDatum['연구기간'],
+      researchType: apiDatum['연구종류'],
+      stage: apiDatum['임상시험단계(연구모형)'],
+      scope: apiDatum['연구범위'],
+    });
+    return await this.trialsRepository.save(newTrial);
+  }
+
+  async updateTrialEntity(apiDatum, dbDatum) {
     const update: Partial<Trial> = {};
 
     if (apiDatum['과제명'] !== dbDatum.title)
@@ -140,6 +136,6 @@ export class TrialsService {
     if (apiDatum['연구범위'] !== dbDatum.scope)
       update['scope'] = apiDatum['연구범위'];
 
-    return update;
+    return await this.trialsRepository.update({ id: dbDatum.id }, update);
   }
 }
