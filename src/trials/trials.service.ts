@@ -5,6 +5,7 @@ import { Cron, CronExpression } from '@nestjs/schedule';
 import { CreateTrialDto } from './dto/create-trial.dto';
 import { TrialsRepository } from './trials.repository';
 import { Trial } from './entities/trial.entity';
+import { Like } from "typeorm";
 
 @Injectable()
 export class TrialsService {
@@ -33,12 +34,32 @@ export class TrialsService {
     return `This action adds a new trial `;
   }
 
-  findAll() {
-    return `This action returns all trials`;
+  async findAll(search: string): Promise<Trial[]>  {
+    const data = await this.trialsRepository.find({
+      where: [
+          { id: Like(`%${search}%`)},
+          { title: Like(`%${search}%`)},
+          { department: Like(`%${search}%`)},
+          { institution: Like(`%${search}%`)},
+          { subjectCount: Like(`%${search}%`)},
+          { period: Like(`%${search}%`)},
+          { researchType: Like(`%${search}%`)},
+          { stage: Like(`%${search}%`)},
+          { scope: Like(`%${search}%`)},
+          { updatedAt: Like(`%${search}%`)},
+      ],
+    });
+    return data;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} trial`;
+  async findOne(id: string): Promise<Trial> {
+    const data = await this.trialsRepository.findOne({
+      id: id,
+    });
+    if (!data) {
+      throw new NotFoundException();
+    }
+    return data;
   }
 
   @Cron(CronExpression.EVERY_WEEK)
