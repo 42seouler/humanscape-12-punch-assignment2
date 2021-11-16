@@ -11,6 +11,7 @@ import {
 import { TrialsService } from './trials.service';
 import { CreateTrialDto } from './dto/create-trial.dto';
 import { UpdateTrialDto } from './dto/update-trial.dto';
+import PaginationDto from '../pagination/pagination.dto';
 
 @Controller('trials')
 export class TrialsController {
@@ -22,10 +23,10 @@ export class TrialsController {
   }
 
   @Get()
-  findAll(@Query('search') search: string) {
-    return this.trialsService.findAll(search);
+  async findAll(@Query() paginationDto: PaginationDto) {
+    return this.trialsService.findAll(paginationDto);
   }
-  
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.trialsService.findOne(id);
