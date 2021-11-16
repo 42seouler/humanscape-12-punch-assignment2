@@ -245,6 +245,8 @@ $ npm install
 $ npm start
 ```
 
+4.유닛 테스트를 확인합니다.
+
 ```
 $ npm test
 ```
