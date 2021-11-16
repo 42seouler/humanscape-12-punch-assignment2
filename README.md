@@ -98,7 +98,8 @@
 
 ## DB Schema
 
-<img src="https://user-images.githubusercontent.com/67426853/142024138-8c588c4a-e129-46f3-813c-fc687f5ed2ab.png" width=400/>
+<img src="https://user-images.githubusercontent.com/77760709/142063070-76c2ea94-f8f9-46e2-b1be-f44b66b5259a.png" width=400/>
+
 
 </br>
 </br>
