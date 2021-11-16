@@ -97,7 +97,7 @@ describe('TrialsService', () => {
 
     beforeEach(async () => {
       trialsRepository.find.mockResolvedValueOnce([]);
-      await service.findAll(mockPaginationDto);
+      await service.findUpdateList(mockPaginationDto);
     });
 
     it('createQueryBuilder를 호출해야 합니다.', async () => {
@@ -128,7 +128,7 @@ describe('TrialsService', () => {
       jest
         .spyOn(trialsRepository.createQueryBuilder(), 'getMany')
         .mockResolvedValueOnce([trial]);
-      const result = await service.findAll(mockPaginationDto);
+      const result = await service.findUpdateList(mockPaginationDto);
 
       expect(trialsRepository.createQueryBuilder().getMany).toHaveBeenCalled();
       expect(result).toEqual([trial]);
