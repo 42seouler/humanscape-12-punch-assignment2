@@ -24,7 +24,7 @@
 | 김서경 | [riley909](https://github.com/riley909)         | 외부 API 호출, Unit Test |          |
 | 김요셉 | [kim-jos](https://github.com/kim-jos)           | 임상정보 수집 Batch Task |          |
 | 정천우 | [codehousepig](https://github.com/codehousepig) | Unit Test, 배포         | [codehousepig](https://blog.naver.com/codehouse9/222568810485)          |
-| 최유진 | [n12seconds](https://github.com/n12seconds)     |            |          |
+| 최유진 | [n12seconds](https://github.com/n12seconds)     | 리스트 검색, 단건 조회 |          |
 
 </div>
 
