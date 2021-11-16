@@ -91,7 +91,7 @@
 
 ### [Etc.] <img src="https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=Git&logoColor=white"/>&nbsp;<img src="https://img.shields.io/badge/Github-181717?style=for-the-badge&logo=Github&logoColor=white"/>&nbsp;<img src="https://img.shields.io/badge/Postman-FF6C37?style=for-the-badge&logo=Postman&logoColor=white"/> <img src="https://img.shields.io/badge/-Swagger-%23Clojure?style=for-the-badge&logo=swagger&logoColor=white">
 
-<img src="https://user-images.githubusercontent.com/67426853/141735078-05c51c5c-a5b2-452d-ad5f-79ba79f7d04a.png" width=700>
+<img src="https://user-images.githubusercontent.com/67426853/142021914-2759702e-0921-4cbf-8aa2-a30a37de967c.png">
 
 <br>
 <br>
