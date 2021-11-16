@@ -89,7 +89,7 @@ describe('TrialsService', () => {
     }); // page, perPage OK, serviceKey blank
   }); // end loadDate()
 
-  describe('findAll이 호출되면', () => {
+  describe('findUpdateList 호출되면', () => {
     const mockPaginationDto = {
       offset: 1,
       skip: 10,
