@@ -25,10 +25,5 @@ export class TrialsController {
   findOne(@Param('id') id: string) {
     return this.trialsService.findOne(id);
   }
-
-  @ApiOperation({ summary: '(test)임상정보 수집 및 업데이트' })
-  @Patch(':id')
-  update() {
-    this.trialsService.batchTask()
-  }
+  
 }
