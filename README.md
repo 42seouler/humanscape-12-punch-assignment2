@@ -141,11 +141,9 @@ Cron을 사용해 매 시간 임상정보를 수집하는 메소드가 실행되
 
 ## 📖 API Document
 
-[🔗 Postman Document]()
+[🔗 Swagger](http://13.125.0.161:3015/api/)
 
 ### API Test 방법
-
-다음 링크로 이동합니다. [postman 링크]()
 
 #### <span style="color:red">주의사항</span>
 - <span style="color:slateblue">아래의 findUpdateList, findAll은 페이지네이션이 적용되어 있습니다.</span>
