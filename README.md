@@ -141,7 +141,7 @@ Cron을 사용해 매 시간 임상정보를 수집하는 메소드가 실행되
 
 ## 📖 API Document
 
-[🔗 Swagger](http://13.125.0.161:3015/api/)
+[🔗 Swagger ](http://13.125.0.161:3015/api/)
 
 ### API Test 방법
 
