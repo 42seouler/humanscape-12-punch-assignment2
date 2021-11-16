@@ -11,7 +11,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 export class TrialsService {
   constructor(
     private configService: ConfigService,
-
     @InjectRepository(Trial)
     private readonly trialsRepository: TrialsRepository,
   ) {}
@@ -77,6 +76,7 @@ export class TrialsService {
 
     while (page <= data.totalCount) {
       const apiData = await this.loadData(page, perPage);
+
       page = page + perPage;
 
       for (let i = 0; i < apiData.data.length; i++) {

@@ -5,6 +5,7 @@ import { Trial } from './entities/trial.entity';
 import { Repository } from 'typeorm';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { TrialsRepository } from './trials.repository';
+import { NotFoundException } from '@nestjs/common';
 
 type MockRepository<T = any> = Partial<Record<keyof Repository<T>, jest.Mock>>;
 const mockRepository = () => ({
@@ -71,6 +72,34 @@ describe('TrialsService', () => {
       expect(result).toBeUndefined(); // undefined
     }); // page, perPage OK, serviceKey blank
   }); // end loadDate()
+
+  describe('findOne 의', () => {
+    it('Status: 200, 성공적으로 수행 됨', async () => {
+      const id = 'C130010';
+      const temp = {
+        id: id,
+        title: '조직구증식증 임상연구 네트워크 구축 및 운영(HLH)',
+        department: 'Pediatrics',
+        institution: '서울아산병원',
+        subjectCount: 120,
+        period: '3년',
+        researchType: '관찰연구',
+        stage: '코호트',
+        scope: '국내다기관',
+      };
+      trialsRepository.findOne.mockResolvedValue(temp);
+      const result = await service.findOne(id);
+      expect(result.id).toEqual(temp.id);
+    }); // end status 200
+    it('Status: 404 Not Found, 요청 리소스를 찾을 수 없음', async () => {
+      const id = 'temp';
+      try {
+        await service.findOne(id);
+      } catch (e) {
+        expect(e).toBeInstanceOf(NotFoundException);
+      }
+    }); // end status 404
+  }); // end findOne()
 
   describe('update 메소드', () => {
     it('should insert', async () => {
