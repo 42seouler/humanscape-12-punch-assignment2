@@ -6,10 +6,8 @@ import { TrialsRepository } from './trials.repository';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([Trial, TrialsRepository]),
-  ],
+  imports: [TypeOrmModule.forFeature([Trial, TrialsRepository])],
   controllers: [TrialsController],
-  providers: [TrialsService]
+  providers: [TrialsService],
 })
 export class TrialsModule {}

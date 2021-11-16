@@ -1,4 +1,3 @@
-
 import { EntityRepository, Repository } from 'typeorm';
 import { Trial } from './entities/trial.entity';
 
