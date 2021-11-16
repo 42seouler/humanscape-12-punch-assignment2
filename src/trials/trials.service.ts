@@ -66,10 +66,8 @@ export class TrialsService {
       .setParameters(filters)
       .getCount();
 
-    const totalElement = await this.trialsRepository.count();
     const totalPage = Math.round(updateElement / skip);
     return {
-      totalElement: totalElement,
       updateElement: updateElement,
       totalPage: totalPage,
       currentPage: offset,
