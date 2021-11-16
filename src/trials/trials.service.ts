@@ -99,7 +99,7 @@ export class TrialsService {
     }
   }
 
-  private async insertTrialEntity(apiDatum) {
+  async insertTrialEntity(apiDatum) {
     const newTrial = await this.trialsRepository.create({
       id: apiDatum['과제번호'],
       title: apiDatum['과제명'],
@@ -114,7 +114,7 @@ export class TrialsService {
     return await this.trialsRepository.save(newTrial);
   }
 
-  private async updateTrialEntity(apiDatum, dbDatum) {
+  async updateTrialEntity(apiDatum, dbDatum) {
     const update: Partial<Trial> = {};
 
     if (apiDatum['과제명'] !== dbDatum.title)
