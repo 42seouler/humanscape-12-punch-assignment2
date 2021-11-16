@@ -12,6 +12,7 @@ const mockRepository = () => ({
   findOne: jest.fn(),
   create: jest.fn(),
   update: jest.fn(),
+  save: jest.fn(),
 });
 
 describe('TrialsService', () => {
@@ -70,4 +71,22 @@ describe('TrialsService', () => {
       expect(result).toBeUndefined(); // undefined
     }); // page, perPage OK, serviceKey blank
   }); // end loadDate()
+
+  describe('update 메소드', () => {
+    it('should insert', async () => {
+      jest.spyOn(trialsRepository, 'findOne').mockResolvedValue(null);
+      const insertFunction = jest.spyOn(service, 'insertTrialEntity');
+
+      await service.batchTask();
+      expect(insertFunction).toHaveBeenCalled();
+    });
+
+    it('should update', async () => {
+      jest.spyOn(trialsRepository, 'findOne').mockResolvedValue({} as Trial);
+      const updateFunction = jest.spyOn(service, 'updateTrialEntity');
+
+      await service.batchTask();
+      expect(updateFunction).toHaveBeenCalled();
+    });
+  });
 }); // end TrialsService
