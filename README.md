@@ -245,8 +245,6 @@ $ npm install
 $ npm start
 ```
 
-<span style="color:red"><b>[수정]</b>4. Unit test 및 End-to-End test를 진행합니다.</span>
-
 ```
 $ npm test
 ```
